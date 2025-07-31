@@ -35,5 +35,4 @@ const deleteTask = async (req, res) => {
         res.status(400).json({error : error.message});        
     }
 }
-
 module.exports = {addTask, getTask, updateTask,deleteTask}
