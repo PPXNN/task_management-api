@@ -1,4 +1,4 @@
-const UserRepository = require("../repositories/user.repository")
+const UserRepository = require("../../data/data-sources/repositories/user.repository")
 const bcrypt = require("bcrypt");
 
 class AuthService {

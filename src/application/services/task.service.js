@@ -1,4 +1,4 @@
-const TaskRepository = require("../repositories/task.repository")
+const TaskRepository = require("../../data/data-sources/repositories/task.repository")
 
 class TaskService{
     static async addTask(userData){
