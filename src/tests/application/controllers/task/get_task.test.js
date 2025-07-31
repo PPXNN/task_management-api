@@ -1,6 +1,6 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {get_task} = require("../../../../application/controllers/task")
+const {getTask} = require("../../../../application/controllers/task.controller")
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -21,7 +21,7 @@ test("should return all tasks", async () => {
         json: jest.fn()
     };
 
-    await get_task(req, res);
+    await getTask(req, res);
 
     expect(res.json).toHaveBeenCalledWith(fakeData);
 });
@@ -42,7 +42,7 @@ test ("should return 400 if user id is not found", async () => {
         json : jest.fn()
     };
 
-    await get_task(req, res);
+    await getTask(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
@@ -69,7 +69,7 @@ test ("should return 400 if task id is not found", async () => {
         json : jest.fn()
     };
 
-    await get_task(req, res);
+    await getTask(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
@@ -94,7 +94,7 @@ test ("should return data with specific user id", async () => {
         json : jest.fn()
     };
     
-    await get_task(req, res)
+    await getTask(req, res)
 
     expect(res.json).toHaveBeenCalledWith(fakeData)
 
@@ -119,7 +119,7 @@ test ("should return data with specific user id and task id", async () => {
         json : jest.fn()
     };
 
-    await get_task(req, res)
+    await getTask(req, res)
 
     expect(res.json).toHaveBeenCalledWith(fakeData)
 

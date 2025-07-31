@@ -1,7 +1,7 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 jest.mock("bcrypt");
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {login} = require("../../../../application/controllers/auth")
+const {login} = require("../../../../application/controllers/auth.controller")
 const bcrypt = require("bcrypt");
 
 beforeEach(() => {
@@ -29,7 +29,7 @@ test("should return 400 if username is not found", async ()=> {
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
-        message: "User does not exist"
+        error: "User does not exist"
     });
 })
 
@@ -56,12 +56,12 @@ test("should return 400 if password is not match", async () =>{
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
-        message : "Your password is incorrect"
+        error : "Your password is incorrect"
     });
 
 })
 
-test("should return 201 if password is match", async () =>{
+test("should return 200 if password is match", async () =>{
     const req = {
         body : {
             username : "pp",
@@ -82,7 +82,7 @@ test("should return 201 if password is match", async () =>{
 
     await login(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(201)
+    expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({
         message : "Login successfully"
     });

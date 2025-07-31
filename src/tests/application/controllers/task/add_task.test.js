@@ -1,6 +1,6 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {add_task} = require("../../../../application/controllers/task")
+const {addTask} = require("../../../../application/controllers/task.controller")
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -21,7 +21,7 @@ test("should return 400 if title is missing", async () =>{
         json : jest.fn()
     };
 
-    await add_task(req, res);
+    await addTask(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
         error: "title, detail, priority, due_date and created_by are required"
@@ -44,7 +44,7 @@ test("should return 400 if priority is not in ['low', 'medium', 'high']", async 
         json : jest.fn()
     };
 
-    await add_task(req, res);
+    await addTask(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
         error : "Priority must be 'high', 'medium', or 'low'"
@@ -71,11 +71,11 @@ test("should return 400 if user id is not existed", async () =>{
         json : jest.fn()
     };
 
-    await add_task(req, res)
+    await addTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
-        error: "Username does not exist"
+        error: "User id does not exist"
     });
 })
 
@@ -99,7 +99,7 @@ test("should return 201 if the task is added successfully", async () =>{
         json : jest.fn()
     }
     
-    await add_task(req, res)
+    await addTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(201)
     expect(res.json).toHaveBeenCalledWith({

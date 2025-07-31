@@ -1,6 +1,6 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {register} = require("../../../../application/controllers/auth")
+const {register} = require("../../../../application/controllers/auth.controller")
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -31,7 +31,7 @@ test("should return 400 if user is already existed", async () => {
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
-        message: "User is already existed"
+        error : "User is already existed"
     });
 })
 
@@ -48,7 +48,7 @@ test("should return 201 if register is successfully", async () => {
     };
 
     conn.mockResolvedValue({
-        execute : jest.fn().mockResolvedValueOnce([[]]).mockResolvedValueOnce([[{insertId: 1}]]).mockResolvedValueOnce([[]])
+        execute : jest.fn().mockResolvedValueOnce([[]]).mockResolvedValueOnce([[{insertId: 1}]]).mockResolvedValueOnce([{affectedRows: 1}])
     });
 
     const res = {
@@ -60,7 +60,7 @@ test("should return 201 if register is successfully", async () => {
 
     expect(res.status).toHaveBeenCalledWith(201)
     expect(res.json).toHaveBeenCalledWith({
-        message: "User Register"
+        message: "User registered successfully"
     })
 
 })

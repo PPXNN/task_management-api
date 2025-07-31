@@ -1,6 +1,6 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {delete_task} = require("../../../../application/controllers/task")
+const {deleteTask} = require("../../../../application/controllers/task.controller")
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -18,7 +18,7 @@ test("should return 200 if user id is missing", async () =>{
         json : jest.fn()
     }
 
-    await delete_task(req, res)
+    await deleteTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
@@ -38,7 +38,7 @@ test("should return 200 if task id is missing", async () =>{
         json : jest.fn()
     }
 
-    await delete_task(req, res)
+    await deleteTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
@@ -63,7 +63,7 @@ test("should return 200 if task is deleted successfully", async () => {
         json : jest.fn()
     }
 
-    await delete_task(req, res)
+    await deleteTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({

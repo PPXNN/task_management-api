@@ -1,6 +1,6 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {update_task} = require("../../../../application/controllers/task")
+const {updateTask} = require("../../../../application/controllers/task.controller")
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -22,7 +22,7 @@ test("should return 400 if status is not in ['todo', 'in_progress', 'done']", as
         json : jest.fn()
     };
 
-    await update_task(req, res)
+    await updateTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
@@ -46,7 +46,7 @@ test("should return 400 if priority is not in ['low', 'medium', 'high']", async 
         json : jest.fn()
     };
 
-    await update_task(req, res);
+    await updateTask(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -69,11 +69,11 @@ test("should return 400 if no fields update", async () =>{
         json : jest.fn()
     };
 
-    await update_task(req, res);
+    await updateTask(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-        message : "No fields to update"
+        error : "No fields to update"
     });
 })
 
@@ -97,7 +97,7 @@ test("should return 400 if task not found with the task ID and user ID", async (
         json : jest.fn()
     };
 
-    await update_task(req, res)
+    await updateTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
@@ -117,8 +117,6 @@ test("should return 200 if task is updated successfully", async () =>{
         }
     };
 
-    const fakeData = [{task_id : 1, title: "test", detail: "test detail", priority: "low", due_date : "2025-06-11", status: "todo"}]
-
     conn.mockResolvedValue({
         execute : jest.fn().mockResolvedValueOnce([{affectedRows: 1}])
     });
@@ -128,7 +126,7 @@ test("should return 200 if task is updated successfully", async () =>{
         json : jest.fn()
     };
 
-    await update_task(req, res)
+    await updateTask(req, res)
 
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith({

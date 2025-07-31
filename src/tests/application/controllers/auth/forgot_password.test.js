@@ -1,10 +1,10 @@
 jest.mock("../../../../data/data-sources/db-datasource/database", () => jest.fn());
 jest.mock("bcrypt");
 const conn = require("../../../../data/data-sources/db-datasource/database")
-const {forgot_password} = require("../../../../application/controllers/auth")
+const {forgotPassword} = require("../../../../application/controllers/auth.controller")
 const bcrypt = require("bcrypt");
 
-test("should return 400 if username is not found", async () =>{
+test("should return 400 if user does not exist", async () =>{
     const req = {
         body : {
             username : "pp", 
@@ -24,11 +24,11 @@ test("should return 400 if username is not found", async () =>{
         json : jest.fn()
     };
 
-    await forgot_password(req ,res);
+    await forgotPassword(req ,res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-        error : "Username is not found"
+        error : "User does not exist"
     });
 })
 
@@ -52,7 +52,7 @@ test("should return 400 if phone number or email does not match", async () => {
         json : jest.fn()
     };
 
-    await forgot_password(req ,res);
+    await forgotPassword(req ,res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -84,7 +84,7 @@ test("should return 400 if new password and confirm new password does not match"
         json : jest.fn()
     };
 
-    await forgot_password(req ,res);
+    await forgotPassword(req ,res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -92,7 +92,7 @@ test("should return 400 if new password and confirm new password does not match"
     });
 })
 
-test("should return 201 if password has changed successfully", async () => {
+test("should return 200 if password has changed successfully", async () => {
     const req = {
         body : {
             username : "pp", 
@@ -104,9 +104,9 @@ test("should return 201 if password has changed successfully", async () => {
     }; 
 
     conn.mockResolvedValue({
-        execute : jest.fn().mockResolvedValueOnce([[{user_id: 1, username : "p", password : "hashpassword"}]]).mockResolvedValueOnce(
+        execute : jest.fn().mockResolvedValueOnce([[{user_id: 1, username : "pp", password : "hashpassword"}]]).mockResolvedValueOnce(
             [[{
-            user_id : 1 ,user_id :1 , email: "pp@example.com", phone_number : "12341123332"
+            user_id : 1 ,user_id :1 , phone_number: "12341123332", email : "pp@example.com"
             }]]).mockResolvedValueOnce([{affectedRows: 1}])
     });
 
@@ -117,9 +117,9 @@ test("should return 201 if password has changed successfully", async () => {
         json : jest.fn()
     };
 
-    await forgot_password(req, res);
+    await forgotPassword(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
         message : "Password has changed successfully"
     });
