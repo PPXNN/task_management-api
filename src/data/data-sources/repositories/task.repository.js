@@ -23,7 +23,14 @@ const TaskRepository = {
                 "SELECT * FROM tasks WHERE created_by = ? AND task_id = ? ORDER BY FIELD(priority, 'high', 'medium', 'low'), FIELD(status_task, 'todo', 'in_progress', 'done')", 
                 [id, taskId]
             );
-            return taskResult.length > 0 ? taskResult[0] : null;
+
+            if (taskResult.length > 0 ){
+                return taskResult[0]
+            }
+            else{
+                throw new Error("Task id is not existed")
+            }
+
         }
     
         if (id){
@@ -31,7 +38,14 @@ const TaskRepository = {
                 "SELECT * FROM tasks WHERE created_by = ? ORDER BY FIELD(priority, 'high', 'medium', 'low'), FIELD(status_task, 'todo', 'in_progress', 'done')", 
                 [id]
             );
-            return result.length > 0 ? result : null
+
+            if (result.length > 0 ){
+                return result
+            }
+            else{
+                throw new Error("User id is not existed")
+            }
+            
         }
     
         const [result] = await db.execute(
