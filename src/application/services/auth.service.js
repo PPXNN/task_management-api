@@ -1,9 +1,24 @@
 const UserRepository = require("../../data/data-sources/repositories/user.repository")
 const bcrypt = require("bcrypt");
+const UserRegisterDTO = require("../dtos/auth/register.dto")
+const UserLoginDTO = require("../dtos/auth/login.dto")
+const ChangePasswordDTO = require("../dtos/auth/change_password.dto")
+const ForgotPasswordDTO = require("../dtos/auth/forgot_password.dto")
+const {validate} = require("class-validator")
 
 class AuthService {
     static async register(userData){
-        const { username, password, firstname, lastname, phone_number, email } = userData;
+
+        const dto = new UserRegisterDTO(userData);
+        const errors = await validate(dto);
+
+        if (errors.length > 0){
+            const error = errors[0];
+            const msg_error = Object.values(error.constraints)[0];
+            throw new Error(msg_error);
+        }
+
+        const { username, password, firstname, lastname, phone_number, email } = dto;
 
         const userExist = await UserRepository.findUser(username);
         if (userExist){
@@ -21,7 +36,15 @@ class AuthService {
     }
 
     static async login(userData){
-        const {username, password} = userData;
+        const dto = new UserLoginDTO(userData);
+        const errors = await validate(dto);
+        if (errors.length >0){
+            const error = errors[0];
+            const msg_error = Object.values(error.constraints)[0];
+            throw new Error(msg_error);
+        }
+
+        const {username, password} = dto;
 
         const user = await UserRepository.findUser(username);
         if (!user){
@@ -39,7 +62,15 @@ class AuthService {
     }
 
     static async changePassword(userData){
-        const {username, old_password, new_password, confirm_new_password} = userData;
+        const dto = new ChangePasswordDTO(userData);
+        const errors = await validate(dto);
+        if (errors.length >0){
+            const error = errors[0];
+            const msg_error = Object.values(error.constraints)[0];
+            throw new Error(msg_error);
+        }
+
+        const {username, old_password, new_password, confirm_new_password} = dto;
 
         const user = await UserRepository.findUser(username);
         if (!user){
@@ -67,6 +98,14 @@ class AuthService {
     }
 
     static async forgotPassword(userData){
+        const dto = new ForgotPasswordDTO(userData)
+        const errors = await validate(dto)
+        if (errors.length >0){
+            const error = errors[0];
+            const msg_error = Object.values(error.constraints)[0];
+            throw new Error(msg_error);
+        }
+
         const {username, email, phone_number, new_password, confirm_new_password} = userData;
 
         const user = await UserRepository.findUser(username);

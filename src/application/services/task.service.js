@@ -1,16 +1,18 @@
-const TaskRepository = require("../../data/data-sources/repositories/task.repository")
+const TaskRepository = require("../../data/data-sources/repositories/task.repository");
+const addTaskDTO = require("../dtos/task/add_task.dto");
+const updateTaskDTO = require("../dtos/task/update_task.dto")
+const {validate} = require("class-validator");
 
 class TaskService{
     static async addTask(userData){
-        const {title, detail , priority, due_date, created_by} = userData;
-        const validPriority = ["high", "medium", "low"];
-
-        if (!title || !detail || !priority || !created_by || !due_date){
-            throw new Error("title, detail, priority, due_date and created_by are required");
+        const dto = new addTaskDTO(userData);
+        const errors = await validate(dto); 
+        if (errors.length > 0){
+            const error = errors[0];
+            const msg_error = Object.values(error.constraints)[0];
+            throw new Error(msg_error);
         }
-        if (!validPriority.includes(priority)){
-            throw new Error("Priority must be 'high', 'medium', or 'low'");
-        }
+        const {title, detail , priority, due_date, created_by} = dto;
 
         const userResult = await TaskRepository.findUserId(created_by)
         if (!userResult){
@@ -29,9 +31,6 @@ class TaskService{
     static async getTask(userData){
         const {id, taskId} = userData
         const task = await TaskRepository.getTask(id, taskId);
-        if (!task){
-            throw new Error("Task id is not existed");
-        }
 
         return task;
     }
@@ -39,8 +38,25 @@ class TaskService{
     static async updateTask(userData, userParams){
         const {title, detail, priority, due_date, status} = userData;
         const {id, taskId} = userParams
-        const validStatus = ["todo", "in_progress", "done"];
-        const validPriority = ["high", "medium", "low"];
+
+        const dto = new updateTaskDTO({
+            title,
+            detail,
+            priority,
+            due_date,
+            status,
+            id,
+            taskId
+        });
+
+        const errors = await validate(dto); 
+        if (errors.length > 0){
+            const error = errors[0];
+            const msg_error = Object.values(error.constraints)[0];
+            throw new Error(msg_error);
+        }
+    
+
         const updates = [];
         const values = [];
 
@@ -55,9 +71,6 @@ class TaskService{
         }
     
         if (priority){
-            if (!validPriority.includes(priority)){
-                throw new Error("Priority must be 'high', 'medium', or 'low'");
-            }
             
             updates.push("priority = ?");
             values.push(priority);
@@ -69,10 +82,6 @@ class TaskService{
         }
     
         if (status){
-            if (!validStatus.includes(status)){
-                throw new Error("Status must be 'todo', 'in_progress', or 'done'")
-            }
-    
             updates.push("status_task = ?");
             values.push(status);
         }
