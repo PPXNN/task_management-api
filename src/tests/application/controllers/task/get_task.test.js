@@ -18,11 +18,13 @@ test("should return all tasks", async () => {
     });
 
     const res = {
+        status: jest.fn().mockReturnThis(),
         json: jest.fn()
     };
 
     await getTask(req, res);
 
+    expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith(fakeData);
 });
 
@@ -61,7 +63,7 @@ test ("should return 400 if task id is not found", async () => {
     const fakeData = [{ id: 1, task: "Sample task" }];
 
     conn.mockResolvedValue({
-        execute : jest.fn().mockResolvedValueOnce([fakeData]).mockResolvedValueOnce([[]])
+        execute : jest.fn().mockResolvedValueOnce([[]])
     });
 
     const res = {
@@ -91,11 +93,13 @@ test ("should return data with specific user id", async () => {
     });
 
     const res = {
+        status : jest.fn().mockReturnThis(),
         json : jest.fn()
     };
     
     await getTask(req, res)
 
+    expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith(fakeData)
 
 
@@ -109,18 +113,20 @@ test ("should return data with specific user id and task id", async () => {
         }
     };
 
-    const fakeData = [{ id: 1, task: "Sample task", user_id : 1 }];
+    const fakeData = { id: 1, task: "Sample task", user_id: 1 }; 
 
     conn.mockResolvedValue({
-        execute : jest.fn().mockResolvedValueOnce([fakeData]).mockResolvedValueOnce([fakeData])
+        execute : jest.fn().mockResolvedValueOnce([[fakeData]]).mockResolvedValueOnce([fakeData])
     });
 
     const res = {
+        status : jest.fn().mockReturnThis(),
         json : jest.fn()
     };
 
     await getTask(req, res)
 
+    expect(res.status).toHaveBeenCalledWith(200)
     expect(res.json).toHaveBeenCalledWith(fakeData)
 
 })

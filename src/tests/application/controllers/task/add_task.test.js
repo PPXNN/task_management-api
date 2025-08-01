@@ -24,7 +24,30 @@ test("should return 400 if title is missing", async () =>{
     await addTask(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-        error: "title, detail, priority, due_date and created_by are required"
+        error: "All informations are required "
+    });
+})
+
+test("should return 400 if date is not (YYYY-MM-DD)", async () =>{
+    const req = {
+        body : {
+            title : "test",
+            detail : "Some detail",
+            priority : "low",
+            due_date :"20/05/1987",
+            created_by : 1
+        }
+    };
+
+    const res = {
+        status : jest.fn().mockReturnThis(),
+        json : jest.fn()
+    };
+
+    await addTask(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+        error: "Must be date pattern (YYYY/MM/DD)"
     });
 })
 

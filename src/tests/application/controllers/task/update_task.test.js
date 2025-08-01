@@ -26,7 +26,7 @@ test("should return 400 if status is not in ['todo', 'in_progress', 'done']", as
 
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledWith({
-        error: "Status must be 'todo', 'in_progress', or 'done'"
+        error: "Status must be one of: todo, in_progress, done"
     })
 })
 
@@ -50,7 +50,7 @@ test("should return 400 if priority is not in ['low', 'medium', 'high']", async 
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-        error : "Priority must be 'high', 'medium', or 'low'"
+        error : "Priority must be one of: high, medium, low"
     });
 
 })
